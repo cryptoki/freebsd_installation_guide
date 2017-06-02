@@ -73,9 +73,9 @@ IPv4-Adressen unserer rekursiven DNS-Server lauten:
 213.133.98.98
 213.133.99.99
 213.133.100.100
+```
 
 #### IPv6 DNS
-```
 Die IPv6-Adressen unserer rekursiven DNS-Server lauten:
 ```
 2a01:4f8:0:a0a1::add:1010
