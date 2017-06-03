@@ -42,3 +42,109 @@ create the *same* users and groups on the guest/jail system with the same UID/GI
 * mount the necessary directory in the jail
 * if a service process like nginx needs to read or write the user data, add the nginx user on the jail/guest system to the user group. The nginx user has its own nginx group and all additional user groups. 
      
+
+
+
+### Increase security
+Change the default umask in the */etc/login.conf* from *022* to *027*. The permissions would grant full access to users, limited (read-only) access to groups and no rights for other users.
+```
+default:\
+        :passwd_format=sha512:\
+        :copyright=/etc/COPYRIGHT:\
+        ...
+        ...
+        ...
+        :umask=027:
+```
+rebuild database
+```
+# cap_mkdb /etc/login.conf
+```
+
+for the root user, u have to change it in the *.cshrc* in the root home directory.
+```
+# A righteous umask
+umask 27
+```
+logout and login again.
+
+
+#### what does it mean?
+```
+# touch index.html # with umask 022
+# ls -la
+-rw-r--r--  1 domainUser1  domainUser1  10 Jun  3 13:12 index.html
+
+# touch index.html # with umask 027
+# ls -la
+-rw-r-----  1 domainUser1  domainUser1  10 Jun  3 13:12 index.html
+
+```
+RTFM ;-) https://www.cyberciti.biz/tips/understanding-linux-unix-umask-value-usage.html
+
+
+
+### Setup
+#### Groups
+```
+pw groupadd -g 10001 -n domainUser1
+pw groupadd -g 10002 -n domainUser2
+pw groupadd -g 10003 -n domainUser3
+
+pw group show -a
+```
+
+#### Users
+Use the adduser command to create new user. 
+```
+adduser
+# 1 The username and the group name must be identical. 
+# 2 The User ID UID is identical with the group id GID (must not, but I use the same)
+# 3 The login should be *nologin* .. the domain user has no login/shell rights
+```
+
+#### Create directory structure
+```
+# su -m domainUser1
+```
+change from user to the domainUser1. 
+
+```
+# cd /home/domainUser1
+# mkdir www
+# cd www
+# mkdir www.meineDomain.de
+# cd www.meineDomain.de
+# mkdir public_html
+# mkdir log
+```
+
+#### Change access rights for /home
+```
+root@wallace:/home # ls -la
+total 51
+drwxr-x--x   6 root            wheel           6 Jun  3 00:01 .
+drwxr-xr-x  16 root            wheel          16 May 27 15:25 ..
+drwxr-x---   2 sshAccessUser   sshAccessUser  11 Jun  3 13:25 sshAccessUser
+drwxr-x---   3 domainUser1     domainUser1    11 Jun  3 13:56 domainUser1
+drwxr-x---   3 domainUser2     domainUser2    11 Jun  3 00:25 domainUser2
+drwxr-x---   3 domainUser3     domainUser3    11 Jun  3 00:07 domainUser3
+```
+
+```
+root@wallace:/home/tour-report/www/www.meineDomain.de # ls -la
+total 2
+drwxr-x---  4 root  domainUser1  4 Jun  3 00:09 .
+drwxr-x---  3 root  domainUser1  3 Jun  3 00:07 ..
+drwxr-x---  2 root  domainUser1  2 Jun  3 00:09 log
+drwxr-x---  2 root  domainUser1  4 Jun  3 13:26 public_html
+```
+the user has no free write rights on the www directory tree.
+
+### OpenLDAP
+* next step, setup openldap and switch
+
+#### Add user group to nginx user
+```
+pw user show -a  # shows all users
+```
