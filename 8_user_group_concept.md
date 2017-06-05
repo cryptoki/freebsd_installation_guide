@@ -134,12 +134,21 @@ drwxr-x---   3 domainUser3     domainUser3    11 Jun  3 00:07 domainUser3
 ```
 root@wallace:/home/tour-report/www/www.meineDomain.de # ls -la
 total 2
-drwxr-x---  4 root  domainUser1  4 Jun  3 00:09 .
-drwxr-x---  3 root  domainUser1  3 Jun  3 00:07 ..
-drwxr-x---  2 root  domainUser1  2 Jun  3 00:09 log
-drwxr-x---  2 root  domainUser1  4 Jun  3 13:26 public_html
+drwxr-x---  4 root         domainUser1  4 Jun  3 00:09 .
+drwxr-x---  3 root         domainUser1  3 Jun  3 00:07 ..
+drwxr-x---  2 root         domainUser1  2 Jun  3 00:09 log
+drwxr-x--T  2 domainUser1  domainUser1  4 Jun  3 13:26 public_html
 ```
 the user has no free write rights on the www directory tree.
+
+u have to set the www.meineDomain.de directory with the sticky bit.
+```
+chmod 1750 www.meineDomain.de
+```
+https://www.freebsd.org/doc/handbook/permissions.html
+
+> When the sticky bit is set on a directory, it allows file deletion only by the file owner. This is useful to prevent file deletion in public directories, such as /tmp, by users who do not own the file. To utilize this permission, prefix the permission set with a one (1)
+
 
 ### OpenLDAP
 * next step, setup openldap and switch
@@ -148,3 +157,13 @@ the user has no free write rights on the www directory tree.
 ```
 pw user show -a  # shows all users
 ```
+
+#### Temp
+```
+root@www-nginx:/usr/home/tour-report/www/www.tour-report.de/public_html # pw group show www
+www:*:80:tour-report
+
+
+root@www-nginx:/usr/home/tour-report/www/www.tour-report.de # pw user show www
+www:*:80:80::0:0:World Wide Web Owner:/nonexistent:/usr/sbin/nologin
+``

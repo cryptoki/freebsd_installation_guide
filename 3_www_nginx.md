@@ -183,3 +183,26 @@ pkg autoremove
 curl -k -v http://10.1.1.2:80
 curl -H "Accept-Encoding: gzip" -I http://localhost:80
 ```
+
+#### security
+/usr/local/etc/php.ini
+```
+; This directive allows you to disable certain functions for security reasons.
+; It receives a comma-delimited list of function names.
+; http://php.net/disable-functions
+disable_functions = show_source,shell_exec,passthru,phpinfo,system,mail,exec,popen,proc_open,system
+```
+
+```
+; Decides whether PHP may expose the fact that it is installed on the server
+; (e.g. by adding its signature to the Web server header).  It is no security
+; threat in any way, but it makes it possible to determine whether you use PHP
+; on your server or not.
+; http://php.net/expose-php
+expose_php = Off
+```
+```
+; Whether to allow the treatment of URLs (like http:// or ftp://) as files.
+; http://php.net/allow-url-fopen
+allow_url_fopen = Off
+```
