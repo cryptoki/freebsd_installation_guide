@@ -206,3 +206,6 @@ expose_php = Off
 ; http://php.net/allow-url-fopen
 allow_url_fopen = Off
 ```
+
+#### links
+* https://linuxconfig.org/basic-php-7-and-nginx-configuration-on-ubuntu-16-04-linux
